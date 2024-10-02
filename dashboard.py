@@ -50,21 +50,26 @@ st.write("Filtered Data", filtered_day_df.head())
 
 # Section: Average Rentals by Season
 # Buat figure dan axes
+season_avg_day = avg_rentals_by_season(filtered_day_df)
+season_avg_hour = avg_rentals_by_season(hour_df)
+
 st.subheader("Average of Bike Rental by Season Condition")
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
-# Grafik pertama: Data harian
-sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=axes[0])
+
+# Grafik pertama: Data harian (day.csv)
+sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=axes[0], palette=['lightpink', 'pink'])
 axes[0].set_xlabel('Season')
 axes[0].set_ylabel('Average Total of Bike Rental')
 axes[0].set_title('day.csv')
-# Grafik kedua: Data per jam
+
+# Grafik kedua: Data per jam (hour.csv)
 sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, ax=axes[1], palette=['lightpink', 'pink'])
 axes[1].set_xlabel('Season')
 axes[1].set_ylabel('Average Total of Bike Rental')
 axes[1].set_title('hour.csv')
 
 plt.tight_layout()
-plt.show()
+st.pyplot(fig)
 
 # Section: Average Rentals by Weather
 st.subheader("Average of Bike Rental by Weather Condition")
