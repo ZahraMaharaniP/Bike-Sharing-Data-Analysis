@@ -140,6 +140,7 @@ def plot_daily_rentals(day_df):
     plt.grid(True)
 
     # Tambahkan judul dan label
+    x = day_df['dteday']
     plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
     plt.xlabel('Tanggal', fontsize=12)
     plt.ylabel('Jumlah Peminjaman', fontsize=12)
