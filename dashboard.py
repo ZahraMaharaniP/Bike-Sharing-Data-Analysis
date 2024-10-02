@@ -63,8 +63,9 @@ season_avg_hour = avg_rentals_by_season(hour_df)  # Perlu menggunakan hour_df un
 weather_avg_day = avg_rentals_by_weather(filtered_day_df)
 weather_avg_hour = avg_rentals_by_weather(hour_df)  # Perlu menggunakan hour_df untuk data per jam
 
+st.subheader("Average of Bike Rental by Season & Weather")
 # Visualisasi Rata-rata Peminjaman Sepeda per Musim
-st.write("**Average of Bike Rental by Season**")
+st.write("**Average of by Season**")
 # Membuat subplots berdampingan
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
 # Grafik untuk day.csv
@@ -82,7 +83,7 @@ axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
 st.pyplot(fig)  # Menampilkan plot di Streamlit
 
 # Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
-st.write("**Average of Bike Rental by Weather**")
+st.write("**Average by Weather**")
 # Membuat subplots berdampingan untuk cuaca
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
 # Grafik untuk day.csv
