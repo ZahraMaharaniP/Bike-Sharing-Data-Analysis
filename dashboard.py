@@ -131,7 +131,7 @@ st.pyplot(fig)
 
 
 st.subheader("Total Bike Rental per Day")
-# Atur ukuran gambar dan font
+# Visualisasi total peminjaman sepeda per hari
 plt.figure(figsize=(10, 5))  # Mengatur ukuran gambar menjadi 10 inci lebar dan 5 inci tinggi
 plt.rcParams['font.size'] = 12  # Mengatur ukuran font secara global menjadi 12
 
@@ -140,20 +140,10 @@ sns.lineplot(x='dteday', y='cnt', data=day_df, color='pink')
 plt.grid(True)  # Menampilkan grid pada plot
 
 # Tambahkan judul dan label dengan ukuran font yang lebih besar
-plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16)  # Judul dengan ukuran font 16
+plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Judul dengan ukuran font 16
 plt.xlabel('Tanggal', fontsize=12)  # Label sumbu x dengan ukuran font 12
 plt.ylabel('Jumlah Peminjaman', fontsize=12)  # Label sumbu y dengan ukuran font 12
 plt.xticks(rotation=45)  # Memutar label pada sumbu x sebesar 45 derajat agar lebih mudah dibaca
-
-# Atur posisi judul agar lebih terpusat
-plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Menambahkan padding 20 poin untuk memindahkan judul ke bawah
-
-# Tampilkan legend (jika diperlukan)
-# plt.legend()
-
-# Simpan gambar dengan resolusi tinggi
-plt.savefig('sepeda.png', dpi=300)  # Menyimpan gambar dengan nama 'sepeda.png' dan resolusi 300 dpi
-
 st.pyplot(plt)  # Menampilkan plot
 
 # Fungsi utama untuk menjalankan Streamlit
