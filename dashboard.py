@@ -41,14 +41,23 @@ def avg_rentals_by_weather(df):
 day_df, hour_df = load_data()
 
 # Sidebar navigation
-st.sidebar.header("Navigate Pages")
-page = st.sidebar.radio(
-    "Select Analysis Page:", 
-    ["Bike Rental based on Season & Weather", "Bike Rental based on Days", "Bike Rentals Over Time"]
-)
+st.sidebar.markdown(f"""
+### Select Analysis Page:
+- [{'Bike Rental based on Season & Weather' if st.session_state.page == 'Bike Rental based on Season & Weather' else 'Bike Rental based on Season & Weather'}](#)
+- [{'Bike Rental based on Days' if st.session_state.page == 'Bike Rental based on Days' else 'Bike Rental based on Days'}](#)
+- [{'Bike Rentals Over Time' if st.session_state.page == 'Bike Rentals Over Time' else 'Bike Rentals Over Time'}](#)
+""")
+
+# Trigger page navigation using session state
+if st.sidebar.button('Bike Rental based on Season & Weather'):
+    navigate_page("Bike Rental based on Season & Weather")
+elif st.sidebar.button('Bike Rental based on Days'):
+    navigate_page("Bike Rental based on Days")
+elif st.sidebar.button('Bike Rentals Over Time'):
+    navigate_page("Bike Rentals Over Time")
 
 # Page 1: Bike Rental based on Season & Weather
-if page == "Bike Rental based on Season & Weather":
+if st.session_state.page == "Bike Rental based on Season & Weather":
     st.subheader("Average of Bike Rental by Season & Weather")
     
     # Menghitung rata-rata peminjaman per musim
@@ -90,7 +99,7 @@ if page == "Bike Rental based on Season & Weather":
     st.pyplot(fig)
     
 # Page 2: Bike Rental based on Days
-elif page == "Bike Rental based on Days":
+elif st.session_state.page == "Bike Rental based on Days":
     st.subheader("Average of Bike Rental by Days")
     
     # Menghitung rata-rata peminjaman di hari kerja dan libur
@@ -115,7 +124,7 @@ elif page == "Bike Rental based on Days":
     st.pyplot(fig)
 
 # Page 3: Bike Rentals Over Time
-elif page == "Bike Rentals Over Time":
+elif st.session_state.page == "Bike Rentals Over Time":
     st.subheader("Bike Rentals Over Time")
     
     fig, ax = plt.subplots(figsize=(10, 5))  # Set the figure size
