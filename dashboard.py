@@ -1,100 +1,75 @@
-# Streamlit and additional packages
 import streamlit as st
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy import stats
+import warnings
+warnings.filterwarnings('ignore')
 
-# Load data
-day_df = pd.read_csv("data/day.csv")
-hour_df = pd.read_csv("data/hour.csv")
+# Set Streamlit page configuration
+st.set_page_config(page_title="Bike Sharing Data Analysis", layout="centered")
 
-# Set up the dashboard layout
-st.title("Bike Rental Dashboard")
+# Project Title
+st.title("Proyek Analisis Data: Bike Sharing Dataset")
+st.write("Nama: Zahra Maharani Putri")
+st.write("Email: zhrmhrnputri2001@gmail.com")
+st.write("ID Dicoding: zahra_maharani_putri_T8FO")
 
-# Calculate average rentals by season and weather
-season_avg_day = day_df.groupby('season')['cnt'].mean()
-season_avg_hour = hour_df.groupby('season')['cnt'].mean()
+# Business Questions
+st.header("Pertanyaan Bisnis")
+st.write("1. What is the average bike sharing data when considering the influence of weather and season?")
+st.write("2. What is the pattern of bike sharing data based on weekdays and holidays?")
+st.write("3. Which date shows the most bike sharing data?")
 
-weather_avg_day = day_df.groupby('weathersit')['cnt'].mean()
-weather_avg_hour = hour_df.groupby('weathersit')['cnt'].mean()
+# Load the dataset (You will need to adjust the path or upload option)
+@st.cache_data
+def load_data():
+    day_df = pd.read_csv('data/day.csv')  # Assuming day.csv is uploaded
+    hour_df = pd.read_csv('data/hour.csv')  # Assuming hour.csv is uploaded
+    return day_df, hour_df
 
-# Visualize average rentals by season
-st.subheader("Rata-rata Peminjaman Sepeda per Musim")
-col1, col2 = st.columns(2)  # Creating two side-by-side columns
-with col1:
-    st.write("Rata-rata peminjaman sepeda berdasarkan day.csv")
-    fig1, ax1 = plt.subplots()
-    sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=ax1)
-    ax1.set_xlabel('Musim')
-    ax1.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax1.set_title('Rata-rata Peminjaman Sepeda per Musim (day.csv)')
-    st.pyplot(fig1, key="fig1")
+# Load the data
+day_df, hour_df = load_data()
 
-with col2:
-    st.write("Rata-rata peminjaman sepeda berdasarkan hour.csv")
-    fig2, ax2 = plt.subplots()
-    sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, ax=ax2, palette=['lightpink', 'pink'])
-    ax2.set_xlabel('Musim')
-    ax2.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax2.set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
-    st.pyplot(fig2, key="fig2")
+# Display data samples
+st.header("Bike Sharing Data (Day)")
+st.write(day_df.head())
 
-# Visualize average rentals by weather
-st.subheader("Rata-rata Peminjaman Sepeda per Kondisi Cuaca")
-col3, col4 = st.columns(2)
-with col3:
-    st.write("Rata-rata peminjaman sepeda berdasarkan day.csv")
-    fig3, ax3 = plt.subplots()
-    sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=ax3)
-    ax3.set_xlabel('Kondisi Cuaca')
-    ax3.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax3.set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (day.csv)')
-    st.pyplot(fig3, key="fig3")
+st.header("Bike Sharing Data (Hour)")
+st.write(hour_df.head())
 
-with col4:
-    st.write("Rata-rata peminjaman sepeda berdasarkan hour.csv")
-    fig4, ax4 = plt.subplots()
-    sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, ax=ax4)
-    ax4.set_xlabel('Kondisi Cuaca')
-    ax4.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax4.set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (hour.csv)')
-    st.pyplot(fig4, key="fig4")
+# Average bike sharing by weather and season
+st.subheader("Rata-rata Peminjaman Berdasarkan Cuaca dan Musim")
 
-# Calculate and display rentals on holidays vs workdays
 weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
+
 weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
 
-st.subheader("Perbandingan Peminjaman pada Hari Kerja dan Libur")
-col5, col6 = st.columns(2)
-with col5:
-    st.write("Rata-rata peminjaman sepeda pada day.csv")
-    fig5, ax5 = plt.subplots()
-    sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=ax5)
-    ax5.set_xlabel('Jenis Hari')
-    ax5.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax5.set_title('Rata-rata Peminjaman (day.csv)')
-    st.pyplot(fig5, key="fig5")
+# Display bar plots with custom colors
+fig1, ax1 = plt.subplots()
+sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=ax1)
+ax1.set_xlabel('Jenis Hari')
+ax1.set_ylabel('Rata-rata Jumlah Peminjaman')
+ax1.set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Harian)')
+st.pyplot(fig1)
 
-with col6:
-    st.write("Rata-rata peminjaman sepeda pada hour.csv")
-    fig6, ax6 = plt.subplots()
-    sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_hour, holiday_avg_hour], ax=ax6)
-    ax6.set_xlabel('Jenis Hari')
-    ax6.set_ylabel('Rata-rata Jumlah Peminjaman')
-    ax6.set_title('Rata-rata Peminjaman (hour.csv)')
-    st.pyplot(fig6, key="fig6")
+fig2, ax2 = plt.subplots()
+sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=ax2)
+ax2.set_xlabel('Jenis Hari')
+ax2.set_ylabel('Rata-rata Jumlah Peminjaman')
+ax2.set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Jam)')
+st.pyplot(fig2)
 
-# Find the busiest day
-busiest_day_day = day_df['dteday'].loc[day_df['cnt'].idxmax()]
-busiest_day_hour = hour_df['dteday'].loc[hour_df['cnt'].idxmax()]
+# Statistical tests (T-tests)
+st.subheader("Uji Statistik (T-Test)")
+t_stat_day, p_value_day = stats.ttest_ind(day_df[day_df['workingday'] == 1]['cnt'],
+                                          day_df[day_df['holiday'] == 1]['cnt'])
+st.write(f"Uji t (Data Harian): t-statistic = {t_stat_day}, p-value = {p_value_day}")
 
-st.subheader("Hari dengan Peminjaman Sepeda Terbanyak")
-st.write(f"Hari tersibuk dalam day.csv: {busiest_day_day}")
-st.write(f"Hari tersibuk dalam hour.csv: {busiest_day_hour}")
+t_stat_hour, p_value_hour = stats.ttest_ind(hour_df[hour_df['workingday'] == 1]['cnt'],
+                                            hour_df[hour_df['holiday'] == 1]['cnt'])
+st.write(f"Uji t (Data Jam): t-statistic = {t_stat_hour}, p-value = {p_value_hour}")
 
-
-
-if __name__ == "__main__":
-    pass
