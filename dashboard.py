@@ -10,7 +10,16 @@ warnings.filterwarnings('ignore')
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bike Sharing Data Analysis", layout="centered")
+# Menambahkan logo perusahaan di sidebar utama
+st.sidebar.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
 
+# Menambahkan pilihan page
+page = st.sidebar.selectbox(
+    "Pilih Halaman",
+    ["Sewa Sepeda Berdasarkan Musim dan Cuaca", 
+     "Sewa Sepeda Berdasarkan Libur dan Hari Kerja", 
+     "Sewa Sepeda Selama Periode Waktu"]
+)
 # Load the dataset (You will need to adjust the path or upload option)
 @st.cache_data
 def load_data():
