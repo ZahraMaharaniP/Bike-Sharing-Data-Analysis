@@ -23,7 +23,6 @@ day_df, hour_df = load_data()
 st.header('Bike Rental Dashboard :sparkles:')
 # Sidebar with selectbox for navigation
 st.sidebar.header("Bike Rent")
-st.sidebar.image('path/to/your/logo.png', use_column_width=True)
 page = st.sidebar.selectbox(
     "Navigate Pages",
     ("Bike Rental based on Season & Weather", "Bike Rental based on Days", "Bike Rentals Over Time")
