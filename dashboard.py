@@ -142,7 +142,7 @@ def plot_daily_rentals(day_df):
     plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
     plt.xlabel('Tanggal', fontsize=12)
     plt.ylabel('Jumlah Peminjaman', fontsize=12)
-    plt.xticks(rotation=45)
+    plt.xticks(np.arange(0, len(x), 10), rotation=45)
 
     # Atur format tanggal pada sumbu x agar lebih jelas
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
