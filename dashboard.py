@@ -21,10 +21,10 @@ def load_data():
 day_df, hour_df = load_data()
 
 
-# Adjust the path to your logo
+# Sidebar - Add logo above navigation
+st.sidebar.image('path/to/your/logo.png', use_column_width=True)  # Replace with your logo path
 # Sidebar with selectbox for navigation
 st.sidebar.header("Select Page")
-st.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
 page = st.sidebar.selectbox(
     "Navigate Pages",
     ("Bike Rental based on Season & Weather", "Bike Rental based on Days", "Bike Rentals Over Time")
