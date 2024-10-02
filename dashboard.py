@@ -17,6 +17,17 @@ def load_data():
     hour_df = pd.read_csv('data/hour.csv')  # Assuming hour.csv is uploaded
     return day_df, hour_df
 
+# Definisikan fungsi untuk menghitung rata-rata peminjaman
+def avg_rentals_by_season(df):
+    season_mapping = {1: 'Winter', 2: 'Spring', 3: 'Summer', 4: 'Fall'}
+    df['season'] = df['season'].map(season_mapping)
+    return df.groupby('season')['cnt'].mean()
+
+def avg_rentals_by_weather(df):
+    weather_mapping = {1: 'Clear, Few clouds, Partly cloudy', 2: 'Mist + Cloudy, Mist + Broken clouds', 3: 'Light Snow, Light Rain + Thunderstorm', 4: 'Heavy Rain + Ice Pallets + Thunderstorm'}
+    df['weather'] = df['weather'].map(weather_mapping)
+    return df.groupby('weather')['cnt'].mean()
+
 # Load the data
 day_df, hour_df = load_data()
 
@@ -35,13 +46,16 @@ filtered_day_df = day_df[
     (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
     (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
 ]
+
 # Menghitung rata-rata peminjaman per musim
 season_avg_day = avg_rentals_by_season(filtered_day_df)
-season_avg_hour = avg_rentals_by_season(filtered_hour_df)
+season_avg_hour = avg_rentals_by_season(hour_df)  # Perlu menggunakan hour_df untuk data per jam
+
 # Menghitung rata-rata peminjaman per kondisi cuaca
 weather_avg_day = avg_rentals_by_weather(filtered_day_df)
-weather_avg_hour = avg_rentals_by_weather(filtered_hour_df)
+weather_avg_hour = avg_rentals_by_weather(hour_df)  # Perlu menggunakan hour_df untuk data per jam
 
+# Visualisasi Rata-rata Peminjaman Sepeda per Musim
 st.subheader("Average of Bike Rental by Season")
 # Membuat subplots berdampingan
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
@@ -60,8 +74,7 @@ axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
 st.pyplot(fig)  # Menampilkan plot di Streamlit
 
 # Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
-st.subheader("Average of Bike Rental by Season")
-
+st.subheader("Average of Bike Rental by Weather Conditions")
 # Membuat subplots berdampingan untuk cuaca
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
 # Grafik untuk day.csv
