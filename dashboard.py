@@ -123,28 +123,26 @@ axes[1].set_title('hour.csv')
 plt.tight_layout()
 st.pyplot(fig)
 
+
+st.subheader("Bike Rental Overtime")
 # Fungsi untuk menampilkan jumlah peminjaman sepeda per hari
-def plot_daily_rentals(day_df):
-    plt.figure(figsize=(10, 5))  # Ukuran gambar
-    plt.rcParams['font.size'] = 12  # Ukuran font
+# Atur ukuran gambar dan font
+fig, ax = plt.subplots(figsize=(10, 5))  # Mengatur ukuran gambar menjadi 10 inci lebar dan 5 inci tinggi
+plt.rcParams['font.size'] = 12  # Mengatur ukuran font secara global menjadi 12
 
-    st.subheader("Bike Rental Chart")
-    # Buat line plot dengan warna pink dan grid
-    sns.lineplot(x='dteday', y='cnt', data=day_df, color='pink')
-    plt.grid(True)
+# Buat line plot dengan warna pink dan grid
+sns.lineplot(x='dteday', y='cnt', data=day_df, ax=ax, color='pink')
+ax.grid(True)  # Menampilkan grid pada plot
 
-    # Tambahkan judul dan label
-    plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
-    plt.xlabel('Tanggal', fontsize=12)
-    plt.ylabel('Jumlah Peminjaman', fontsize=12)
-    plt.xticks(rotation=45)
+# Tambahkan judul dan label dengan ukuran font yang lebih besar
+ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Judul dengan ukuran font 16 dan padding 20 poin
+ax.set_xlabel('Tanggal', fontsize=12)  # Label sumbu x dengan ukuran font 12
+ax.set_ylabel('Jumlah Peminjaman', fontsize=12)  # Label sumbu y dengan ukuran font 12
+ax.tick_params(axis='x', rotation=45)  # Memutar label pada sumbu x sebesar 45 derajat agar lebih mudah dibaca
 
-    # Atur format tanggal pada sumbu x agar lebih jelas
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))  # Mengatur interval tanggal yang ditampilkan
+# Menampilkan plot di Streamlit
+st.pyplot(fig)
 
-    st.pyplot(plt)  # Menampilkan plot di Streamlit
-    plt.clf()  # Bersihkan figure setelah ditampilka
 
 
 # Fungsi utama untuk menjalankan Streamlit
