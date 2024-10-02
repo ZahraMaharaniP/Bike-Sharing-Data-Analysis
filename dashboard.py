@@ -20,6 +20,8 @@ def load_data():
 # Load the data
 day_df, hour_df = load_data()
 
+# Sidebar - Add logo
+st.sidebar.image('path/to/your/logo.png', use_column_width=True)  # Adjust the path to your logo
 # Sidebar with selectbox for navigation
 st.sidebar.header("Select Page")
 page = st.sidebar.selectbox(
