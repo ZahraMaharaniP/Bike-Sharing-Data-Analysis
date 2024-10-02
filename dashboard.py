@@ -123,5 +123,28 @@ axes[1].set_title('hour.csv')
 plt.tight_layout()
 st.pyplot(fig)
 
+# Fungsi untuk menampilkan jumlah peminjaman sepeda per hari
+def plot_daily_rentals(day_df):
+    plt.figure(figsize=(10, 5))  # Ukuran gambar
+    plt.rcParams['font.size'] = 12  # Ukuran font
+
+    st.subheader("Bike Rental Chart")
+    # Buat line plot dengan warna pink dan grid
+    sns.lineplot(x='dteday', y='cnt', data=day_df, color='pink')
+    plt.grid(True)
+
+    # Tambahkan judul dan label
+    plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
+    plt.xlabel('Tanggal', fontsize=12)
+    plt.ylabel('Jumlah Peminjaman', fontsize=12)
+    plt.xticks(rotation=45)
+
+    # Atur format tanggal pada sumbu x agar lebih jelas
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))  # Mengatur interval tanggal yang ditampilkan
+
+    st.pyplot(plt)  # Menampilkan plot di Streamlit
+    plt.clf()  # Bersihkan figure setelah ditampilka
+
 if __name__ == "__main__":
     pass
