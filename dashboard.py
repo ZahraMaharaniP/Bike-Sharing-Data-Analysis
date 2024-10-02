@@ -26,10 +26,10 @@ def avg_rentals_by_season(df):
 def avg_rentals_by_weather(df):
     # Menghitung rata-rata peminjaman per kondisi cuaca
     weather_mapping = {
-        1: 'Clear, Few clouds, Partly cloudy',
-        2: 'Mist + Cloudy, Mist + Broken clouds',
-        3: 'Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds',
-        4: 'Heavy Rain + Ice Pallets + Thunderstorm + Mist'
+        1: 'Clear',
+        2: 'Cloudy, Mist',
+        3: 'Light Rain',
+        4: 'Heavy Rain'
     }
     
     df['weathersit'] = df['weathersit'].map(weather_mapping)
