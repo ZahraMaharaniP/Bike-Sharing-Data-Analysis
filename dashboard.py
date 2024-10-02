@@ -148,8 +148,13 @@ plt.xticks(rotation=45)  # Memutar label pada sumbu x sebesar 45 derajat agar le
 # Atur posisi judul agar lebih terpusat
 plt.title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Menambahkan padding 20 poin untuk memindahkan judul ke bawah
 
-# Tampilkan plot menggunakan Streamlit
-st.pyplot(plt)
+# Tampilkan legend (jika diperlukan)
+# plt.legend()
+
+# Simpan gambar dengan resolusi tinggi
+plt.savefig('sepeda.png', dpi=300)  # Menyimpan gambar dengan nama 'sepeda.png' dan resolusi 300 dpi
+
+st.pyplot(plt)  # Menampilkan plot
 
 # Fungsi utama untuk menjalankan Streamlit
 if __name__ == "__main__":
