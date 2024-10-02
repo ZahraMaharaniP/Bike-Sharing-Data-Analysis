@@ -49,8 +49,7 @@ else:
         value=[min_date, max_date]
     )
 
-    filtered_data   
- = all_df[(all_df['order_date'] >= start_date) & (all_df['order_date'] <= end_date)]
+    filtered_data = all_df[(all_df['order_date'] >= start_date) & (all_df['order_date'] <= end_date)]
 # Load the dataset (You will need to adjust the path or upload option)
 
 @st.cache_data
