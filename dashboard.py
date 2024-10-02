@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates 
 from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
@@ -124,23 +125,28 @@ plt.tight_layout()
 st.pyplot(fig)
 
 
-st.subheader("Bike Rental Overtime")
-# Fungsi untuk menampilkan jumlah peminjaman sepeda per hari
-# Atur ukuran gambar dan font
-fig, ax = plt.subplots(figsize=(10, 5))  # Mengatur ukuran gambar menjadi 10 inci lebar dan 5 inci tinggi
-plt.rcParams['font.size'] = 12  # Mengatur ukuran font secara global menjadi 12
+# 3. Bike Rentals Over Time
+st.subheader("Bike Rentals Over Time")
+fig, ax = plt.subplots(figsize=(10, 5))  # Set the figure size
+plt.rcParams['font.size'] = 12  # Set the global font size
 
-# Buat line plot dengan warna pink dan grid
+# Create line plot
 sns.lineplot(x='dteday', y='cnt', data=day_df, ax=ax, color='pink')
-ax.grid(True)  # Menampilkan grid pada plot
+ax.grid(True)  # Show grid
 
-# Tambahkan judul dan label dengan ukuran font yang lebih besar
-ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Judul dengan ukuran font 16 dan padding 20 poin
-ax.set_xlabel('Tanggal', fontsize=12)  # Label sumbu x dengan ukuran font 12
-ax.set_ylabel('Jumlah Peminjaman', fontsize=12)  # Label sumbu y dengan ukuran font 12
-ax.tick_params(axis='x', rotation=45)  # Memutar label pada sumbu x sebesar 45 derajat agar lebih mudah dibaca
+# Add title and labels
+ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
+ax.set_xlabel('Tanggal', fontsize=12)
+ax.set_ylabel('Jumlah Peminjaman', fontsize=12)
 
-# Menampilkan plot di Streamlit
+# Set x-axis major ticks to be every month
+ax.xaxis.set_major_locator(mdates.MonthLocator())  # Major ticks every month
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))  # Format to show month and year
+
+# Rotate x-ticks for better visibility
+ax.tick_params(axis='x', rotation=45)
+
+# Display the plot
 st.pyplot(fig)
 
 
