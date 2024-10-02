@@ -49,39 +49,84 @@ st.markdown("### Data Overview")
 st.write("Filtered Data", filtered_day_df.head())
 
 # Section: Average Rentals by Season
-st.subheader("Rata-rata Peminjaman Sepeda per Musim")
-season_avg_day = avg_rentals_by_season(filtered_day_df)
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=ax)
-ax.set_xlabel('Musim')
-ax.set_ylabel('Rata-rata Jumlah Peminjaman')
-ax.set_title('Rata-rata Peminjaman Sepeda per Musim')
-st.pyplot(fig)
+# Buat figure dan axes
+st.subheader("Average of Bike Rental by Season Condition")
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+# Grafik pertama: Data harian
+sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=axes[0])
+axes[0].set_xlabel('Season')
+axes[0].set_ylabel('Average Total of Bike Rental')
+axes[0].set_title('day.csv')
+# Grafik kedua: Data per jam
+sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, ax=axes[1], palette=['lightpink', 'pink'])
+axes[1].set_xlabel('Season')
+axes[1].set_ylabel('Average Total of Bike Rental')
+axes[1].set_title('hour.csv')
+
+plt.tight_layout()
+plt.show()
 
 # Section: Average Rentals by Weather
-st.subheader("Rata-rata Peminjaman Sepeda per Kondisi Cuaca")
+st.subheader("Average of Bike Rental by Weather Condition")
+wcol1, col2 = st.columns(2)
+# Graph for day.csv
 weather_avg_day = avg_rentals_by_weather(filtered_day_df)
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=ax)
-ax.set_xlabel('Kondisi Cuaca')
-ax.set_ylabel('Rata-rata Jumlah Peminjaman')
-ax.set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca')
-st.pyplot(fig)
+fig, ax = plt.subplots(figsize=(4, 6))
+sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=ax, palette=['lightpink', 'pink'])
+ax.set_xlabel('Weather Condition')
+ax.set_ylabel('Average Total of Bike Rental')
+ax.set_title('day.csv')
+with col1:
+    st.pyplot(fig)
+# Graph for hour.csv
+weather_avg_hour = avg_rentals_by_weather(filtered_hour_df)
+fig, ax = plt.subplots(figsize=(4, 6))
+sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, ax=ax, palette=['lightpink', 'pink'])
+ax.set_xlabel('Weather Condition')
+ax.set_ylabel('Average Total of Bike Rental')
+ax.set_title('hour.csv')
+with col2:
+    st.pyplot(fig)
 
 # Section: Rentals on Holidays vs Workdays
-st.subheader("Perbandingan Peminjaman pada Hari Kerja dan Libur")
-weekday_avg, holiday_avg = avg_rentals_by_holiday_workday(filtered_day_df)
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg, holiday_avg], ax=ax)
-ax.set_xlabel('Jenis Hari')
-ax.set_ylabel('Rata-rata Jumlah Peminjaman')
-ax.set_title('Perbandingan Peminjaman pada Hari Kerja dan Libur')
-st.pyplot(fig)
+weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
+holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
+# Hitung rata-rata peminjaman untuk data per jam
+weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
+holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
+# Buat figure dan axes
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+# Grafik pertama: Data harian
+sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
+axes[0].set_xlabel('Days')
+axes[0].set_ylabel('Average Total of Bike Rental')
+axes[0].set_title('day.csv')
+# Grafik kedua: Data per jam
+sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
+axes[1].set_xlabel('Days')
+axes[1].set_ylabel('Average Total of Bike Rental')
+axes[1].set_title('hour.csv')
 
 # Section: Date with Most Rentals
-st.subheader("Tanggal dengan Peminjaman Sepeda Terbanyak")
+st.subheader("Date of The Most Bike Rental")
 max_day = max_rentals_day(filtered_day_df)
-st.write(f"**Tanggal dengan peminjaman sepeda terbanyak: {max_day}**")
+st.write(f"**Date of The Most Bike Rental: {max_day}**")
+plt.figure(figsize=(10, 5))  # Ukuran gambar sedikit lebih kecil
+plt.rcParams['font.size'] = 12  # Ukuran font sedikit lebih kecil
+
+# Buat line plot dengan warna pink dan grid
+sns.lineplot(x='dteday', y='cnt', data=day_df, color='pink')
+plt.grid(True)
+
+# Tambahkan judul dan label dengan ukuran font yang lebih besar
+plt.title('Total Bike Rental per Day', fontsize=16)
+plt.xlabel('Date', fontsize=12)
+plt.ylabel('Loan Total', fontsize=12)
+plt.xticks(rotation=45)
+
+# Atur posisi judul agar lebih terpusat
+plt.title('Amount of Bike Rentals per Day', fontsize=16, pad=20)
+plt.show()
 
 if __name__ == "__main__":
     pass
