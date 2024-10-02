@@ -49,12 +49,6 @@ def avg_rentals_by_weather(df):
 # Load the data
 day_df, hour_df = load_data()
 
-# Filter the dataframe based on date input
-filtered_day_df = day_df[
-    (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
-    (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
-]
-
 # Menghitung rata-rata peminjaman per musim
 season_avg_day = avg_rentals_by_season(filtered_day_df)
 season_avg_hour = avg_rentals_by_season(hour_df)  # Perlu menggunakan hour_df untuk data per jam
