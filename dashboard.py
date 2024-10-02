@@ -49,16 +49,6 @@ def avg_rentals_by_weather(df):
 # Load the data
 day_df, hour_df = load_data()
 
-# Sidebar for date range filtering
-st.sidebar.header("Filter Data by Date Range")
-min_date = pd.to_datetime(day_df['dteday']).min()
-max_date = pd.to_datetime(day_df['dteday']).max()
-
-start_date, end_date = st.sidebar.date_input(
-    "Select Date Range", [min_date, max_date],
-    min_value=min_date, max_value=max_date
-)
-
 # Filter the dataframe based on date input
 filtered_day_df = day_df[
     (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
