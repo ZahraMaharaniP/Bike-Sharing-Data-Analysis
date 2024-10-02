@@ -64,7 +64,7 @@ weather_avg_day = avg_rentals_by_weather(filtered_day_df)
 weather_avg_hour = avg_rentals_by_weather(hour_df)  # Perlu menggunakan hour_df untuk data per jam
 
 # Visualisasi Rata-rata Peminjaman Sepeda per Musim
-st.subheader("Average of Bike Rental by Season")
+st.write("**Average of Bike Rental by Season**")
 # Membuat subplots berdampingan
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
 # Grafik untuk day.csv
@@ -82,7 +82,7 @@ axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
 st.pyplot(fig)  # Menampilkan plot di Streamlit
 
 # Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
-st.subheader("Average of Bike Rental by Weather Conditions")
+st.write("**Average of Bike Rental by Weather**")
 # Membuat subplots berdampingan untuk cuaca
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
 # Grafik untuk day.csv
@@ -105,7 +105,7 @@ holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
 weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
 
-# Display bar plots with custom colors
+st.subheader("Average of Bike Rental by Days")
 # Buat figure dan axes
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 # Grafik pertama: Data harian
