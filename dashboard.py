@@ -24,9 +24,17 @@ def avg_rentals_by_season(df):
     return df.groupby('season')['cnt'].mean()
 
 def avg_rentals_by_weather(df):
-    weather_mapping = {1: 'Clear, Few clouds, Partly cloudy', 2: 'Mist + Cloudy, Mist + Broken clouds', 3: 'Light Snow, Light Rain + Thunderstorm', 4: 'Heavy Rain + Ice Pallets + Thunderstorm'}
-    df['weather'] = df['weather'].map(weather_mapping)
-    return df.groupby('weather')['cnt'].mean()
+    # Menghitung rata-rata peminjaman per kondisi cuaca
+    weather_mapping = {
+        1: 'Clear, Few clouds, Partly cloudy',
+        2: 'Mist + Cloudy, Mist + Broken clouds',
+        3: 'Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds',
+        4: 'Heavy Rain + Ice Pallets + Thunderstorm + Mist'
+    }
+    
+    df['weathersit'] = df['weathersit'].map(weather_mapping)
+    return df.groupby('weathersit')['cnt'].mean()
+
 
 # Load the data
 day_df, hour_df = load_data()
