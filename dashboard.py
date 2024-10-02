@@ -24,6 +24,27 @@ start_date, end_date = st.sidebar.date_input(
 
 # Filter the dataframe based on date input
 filtered_day_df = day_df[
+    (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) & 
+    (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
+]
+
+filtered_hour_df = hour_df[
+    (pd.to_datetime(hour_df['dteday']) >= pd.to_datetime(start_date)) & 
+    (pd.to_datetime(hour_df['dteday']) <= pd.to_datetime(end_date))
+]
+
+# Sidebar for date range filtering
+st.sidebar.header("Filter Data by Date Range")
+min_date = pd.to_datetime(day_df['dteday']).min()
+max_date = pd.to_datetime(day_df['dteday']).max()
+
+start_date, end_date = st.sidebar.date_input(
+    "Select Date Range", [min_date, max_date],
+    min_value=min_date, max_value=max_date
+)
+
+# Filter the dataframe based on date input
+filtered_day_df = day_df[
     (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
     (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
 ]
@@ -81,8 +102,9 @@ sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=ax, palette=['
 ax.set_xlabel('Weather Condition')
 ax.set_ylabel('Average Total of Bike Rental')
 ax.set_title('day.csv')
-with col1:
+with wcol1:
     st.pyplot(fig)
+
 # Graph for hour.csv
 weather_avg_hour = avg_rentals_by_weather(filtered_hour_df)
 fig, ax = plt.subplots(figsize=(4, 6))
@@ -90,7 +112,7 @@ sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, ax=ax, palette=
 ax.set_xlabel('Weather Condition')
 ax.set_ylabel('Average Total of Bike Rental')
 ax.set_title('hour.csv')
-with col2:
+with wcol2:
     st.pyplot(fig)
 
 # Section: Rentals on Holidays vs Workdays
