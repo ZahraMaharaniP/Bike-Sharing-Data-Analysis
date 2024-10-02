@@ -131,7 +131,7 @@ st.pyplot(fig)
 
 # Fungsi untuk menampilkan jumlah peminjaman sepeda per hari
 def plot_daily_rentals(day_df):
-    plt.figure(figsize=(100, 10))  # Ukuran gambar
+    plt.figure(figsize=(100, 30))  # Ukuran gambar
     plt.rcParams['font.size'] = 12  # Ukuran font
 
     st.subheader("Bike Rental Chart")
