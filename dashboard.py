@@ -1,91 +1,140 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="Bike Sharing Data Analysis", layout="wide")
+st.set_page_config(page_title="Bike Sharing Data Analysis", layout="centered")
 
-# Set the main title
-st.title("Bike Sharing Data Analysis")
-# Menambahkan logo perusahaan di sidebar utama
-st.sidebar.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
-
-# Menambahkan pilihan page
-page = st.sidebar.selectbox(
-    "Pilih Page",
-    ["Bike Rental Based Weather and Season", "Bike Rental Based Holidays and Weekdays", "Bike Rental Over Time"]
-)
-
+# Load the dataset (You will need to adjust the path or upload option)
 @st.cache_data
 def load_data():
     day_df = pd.read_csv('data/day.csv')  # Assuming day.csv is uploaded
     hour_df = pd.read_csv('data/hour.csv')  # Assuming hour.csv is uploaded
     return day_df, hour_df
 
-# Visualizations
+# Definisikan fungsi untuk menghitung rata-rata peminjaman
+def avg_rentals_by_season(df):
+    season_mapping = {1: 'Winter', 2: 'Spring', 3: 'Summer', 4: 'Fall'}
+    df['season'] = df['season'].map(season_mapping)
+    return df.groupby('season')['cnt'].mean()
 
-# 1. Average Bike Rentals by Season
-st.subheader("Average Bike Rentals by Season")
-season_avg = day_df.groupby('season')['cnt'].mean()
+def avg_rentals_by_weather(df):
+    # Menghitung rata-rata peminjaman per kondisi cuaca
+    weather_mapping = {
+        1: 'Clear',
+        2: 'Cloudy, Mist',
+        3: 'Light Rain',
+        4: 'Heavy Rain'
+    }
+    
+    df['weathersit'] = df['weathersit'].map(weather_mapping)
+    return df.groupby('weathersit')['cnt'].mean()
 
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x=season_avg.index, y=season_avg.values, palette="coolwarm", ax=ax)
-ax.set_title('Average Bike Rentals by Season')
-ax.set_xlabel('Season')
-ax.set_ylabel('Average Rentals')
-st.pyplot(fig)
+# Load the data
+day_df, hour_df = load_data()
 
-# 2. Average Bike Rentals by Weather
-st.subheader("Average Bike Rentals by Weather")
-weather_avg = day_df.groupby('weathersit')['cnt'].mean()
+# Sidebar for navigation
+st.sidebar.header("Select Analysis Type")
+analysis_type = st.sidebar.selectbox("Choose a view", 
+                                     ["Bike Rental Based on Weather and Season", 
+                                      "Bike Rental Based on Holidays and Weekdays", 
+                                      "Bike Rental Over Time"])
 
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x=weather_avg.index, y=weather_avg.values, palette="Blues", ax=ax)
-ax.set_title('Average Bike Rentals by Weather')
-ax.set_xlabel('Weather Condition')
-ax.set_ylabel('Average Rentals')
-st.pyplot(fig)
+# Halaman 1: Rata-rata berdasarkan Musim dan Cuaca
+if analysis_type == "Bike Rental Based on Weather and Season":
+    st.subheader("Average of Bike Rental by Season & Weather")
 
-# 3. Bike Rentals Over Time
-st.subheader("Bike Rentals Over Time")
-fig, ax = plt.subplots(figsize=(10, 5))  # Set the figure size
-plt.rcParams['font.size'] = 12  # Set the global font size
+    # Filter the dataframe based on date input
+    st.sidebar.header("Filter Data by Date Range")
+    min_date = pd.to_datetime(day_df['dteday']).min()
+    max_date = pd.to_datetime(day_df['dteday']).max()
 
-# Create line plot
-sns.lineplot(x='dteday', y='cnt', data=day_df, ax=ax, color='pink')
-ax.grid(True)  # Show grid
+    start_date, end_date = st.sidebar.date_input(
+        "Select Date Range", [min_date, max_date],
+        min_value=min_date, max_value=max_date
+    )
 
-# Add title and labels
-ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
-ax.set_xlabel('Tanggal', fontsize=12)
-ax.set_ylabel('Jumlah Peminjaman', fontsize=12)
+    filtered_day_df = day_df[
+        (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
+        (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
+    ]
 
-# Set x-axis major ticks to be every month
-ax.xaxis.set_major_locator(mdates.MonthLocator())  # Major ticks every month
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))  # Format to show month and year
+    # Menghitung rata-rata peminjaman per musim
+    season_avg_day = avg_rentals_by_season(filtered_day_df)
+    season_avg_hour = avg_rentals_by_season(hour_df)
 
-# Rotate x-ticks for better visibility
-ax.tick_params(axis='x', rotation=45)
+    # Menghitung rata-rata peminjaman per kondisi cuaca
+    weather_avg_day = avg_rentals_by_weather(filtered_day_df)
+    weather_avg_hour = avg_rentals_by_weather(hour_df)
 
-# Display the plot
-st.pyplot(fig)
+    # Visualisasi Rata-rata Peminjaman Sepeda per Musim
+    st.write("**Average of Bike Rentals by Season**")
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+    sns.barplot(x=season_avg_day.index, y=season_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
+    axes[0].set_xlabel('Season')
+    axes[0].set_ylabel('Average Rentals')
+    axes[0].set_title('Average Rentals per Season (day.csv)')
 
-# 4. Bike Rentals by Weekdays and Holidays
-st.subheader("Average Bike Rentals: Weekdays vs Holidays")
-weekday_avg = day_df[day_df['workingday'] == 1]['cnt'].mean()
-holiday_avg = day_df[day_df['holiday'] == 1]['cnt'].mean()
+    sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
+    axes[1].set_xlabel('Season')
+    axes[1].set_ylabel('Average Rentals')
+    axes[1].set_title('Average Rentals per Season (hour.csv)')
+    st.pyplot(fig)
 
-fig, ax = plt.subplots(figsize=(6, 4))
-sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg, holiday_avg], palette="Set2", ax=ax)
-ax.set_title('Weekday vs Holiday Rentals')
-ax.set_xlabel('Day Type')
-ax.set_ylabel('Average Rentals')
-st.pyplot(fig)
+    # Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
+    st.write("**Average of Bike Rentals by Weather**")
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+    sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
+    axes[0].set_xlabel('Weather Condition')
+    axes[0].set_ylabel('Average Rentals')
+    axes[0].set_title('Average Rentals per Weather Condition (day.csv)')
+
+    sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
+    axes[1].set_xlabel('Weather Condition')
+    axes[1].set_ylabel('Average Rentals')
+    axes[1].set_title('Average Rentals per Weather Condition (hour.csv)')
+    st.pyplot(fig)
+
+# Halaman 2: Rata-rata berdasarkan hari kerja dan hari libur
+elif analysis_type == "Bike Rental Based on Holidays and Weekdays":
+    st.subheader("Average of Bike Rental by Days")
+    weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
+    holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
+
+    weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
+    holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
+
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+    sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
+    axes[0].set_xlabel('Days')
+    axes[0].set_ylabel('Average Rentals')
+    axes[0].set_title('Average Rentals (day.csv)')
+
+    sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
+    axes[1].set_xlabel('Days')
+    axes[1].set_ylabel('Average Rentals')
+    axes[1].set_title('Average Rentals (hour.csv)')
+    st.pyplot(fig)
+
+# Halaman 3: Grafik jumlah peminjaman sepeda per waktu
+elif analysis_type == "Bike Rental Over Time":
+    st.subheader("Bike Rental Over Time")
+    def plot_daily_rentals(day_df):
+        plt.figure(figsize=(10, 5))
+        sns.lineplot(x='dteday', y='cnt', data=day_df, color='pink')
+        plt.grid(True)
+        plt.title('Bike Rentals per Day', fontsize=16, pad=20)
+        plt.xlabel('Date', fontsize=12)
+        plt.ylabel('Rentals', fontsize=12)
+        plt.xticks(rotation=45)
+        st.pyplot(plt)
+    
+    plot_daily_rentals(day_df)
+
 
 # Fungsi utama untuk menjalankan Streamlit
 if __name__ == "__main__":
