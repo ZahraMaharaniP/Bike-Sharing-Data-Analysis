@@ -18,74 +18,14 @@ st.sidebar.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
 # Menambahkan pilihan page
 page = st.sidebar.selectbox(
     "Pilih Page",
-    ["Information: Bike Rental Based Weather and Season", "Information: Bike Rental Based Holidays and Weekdays", "Bike Rental Over Time"]
+    ["Bike Rental Based Weather and Season", "Bike Rental Based Holidays and Weekdays", "Bike Rental Over Time"]
 )
-
-# Filter berdasarkan page
-if page == "Information: Bike Rental Based Weather and Season":
-    # Tambahkan filter untuk musim dan cuaca di sini
-    season = st.sidebar.selectbox("Pilih Musim", ["Spring", "Summer", "Autumn", "Winter"])
-    weather = st.sidebar.selectbox("Pilih Cuaca", ["Clear", "Cloudy", "Light rain", "Heavy rain"])
-
-    # Filter data berdasarkan musim dan cuaca
-    filtered_data = all_df[(all_df['season'] == season) & (all_df['weather'] == weather)]
-
-elif page == "Information: Bike Rental Based Holidays and Weekdays":
-    # Tambahkan filter untuk hari libur dan hari kerja di sini
-    holiday = st.sidebar.radio("Pilih Hari", ["Holiday", "Weekday"])
-
-    # Filter data berdasarkan hari libur atau hari kerja
-    filtered_data = all_df[all_df['holiday'] == holiday]
-
-else:
-    # Filter berdasarkan rentang waktu
-    min_date = all_df["order_date"].min()
-    max_date = all_df["order_date"].max()
-
-    start_date, end_date = st.date_input(
-        label='Rentang Waktu',
-        min_value=min_date,
-        max_value=max_date,
-        value=[min_date, max_date]
-    )
-
-    filtered_data = all_df[(all_df['order_date'] >= start_date) & (all_df['order_date'] <= end_date)]
-# Load the dataset (You will need to adjust the path or upload option)
 
 @st.cache_data
 def load_data():
     day_df = pd.read_csv('data/day.csv')  # Assuming day.csv is uploaded
     hour_df = pd.read_csv('data/hour.csv')  # Assuming hour.csv is uploaded
     return day_df, hour_df
-
-# Load data
-day_df, hour_df = load_data()
-
-# Sidebar for filtering
-st.sidebar.header("Filter Data")
-seasons = st.sidebar.multiselect(
-    "Select Seasons", ['Winter', 'Spring', 'Summer', 'Fall'], default=['Winter', 'Spring', 'Summer', 'Fall']
-)
-weather_conditions = st.sidebar.multiselect(
-    "Select Weather Conditions", ['Clear', 'Cloudy, Mist', 'Light Rain', 'Heavy Rain'], 
-    default=['Clear', 'Cloudy, Mist']
-)
-
-# Filter the data based on selections
-if seasons:
-    season_mapping = {1: 'Winter', 2: 'Spring', 3: 'Summer', 4: 'Fall'}
-    day_df['season'] = day_df['season'].map(season_mapping)
-    day_df = day_df[day_df['season'].isin(seasons)]
-
-if weather_conditions:
-    weather_mapping = {
-        1: 'Clear',
-        2: 'Cloudy, Mist',
-        3: 'Light Rain',
-        4: 'Heavy Rain'
-    }
-    day_df['weathersit'] = day_df['weathersit'].map(weather_mapping)
-    day_df = day_df[day_df['weathersit'].isin(weather_conditions)]
 
 # Visualizations
 
