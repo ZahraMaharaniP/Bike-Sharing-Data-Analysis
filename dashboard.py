@@ -21,7 +21,7 @@ def load_data():
 day_df, hour_df = load_data()
 
 # Sidebar with selectbox for navigation
-st.sidebar.header("Select Page")
+st.sidebar.header("Bike Rent")
 page = st.sidebar.selectbox(
     "Navigate Pages",
     ("Bike Rental based on Season & Weather", "Bike Rental based on Days", "Bike Rentals Over Time")
@@ -59,14 +59,14 @@ if page == "Bike Rental based on Season & Weather":
     st.write("**Average by Season**")
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
     sns.barplot(x=season_avg_day.index, y=season_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
-    axes[0].set_xlabel('Musim')
-    axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
-    axes[0].set_title('Rata-rata Peminjaman Sepeda per Musim (day.csv)')
+    axes[0].set_xlabel('Season')
+    axes[0].set_ylabel('Average Total of Bike Rental')
+    axes[0].set_title('(day.csv)')
 
     sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
-    axes[1].set_xlabel('Musim')
-    axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
-    axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
+    axes[1].set_xlabel('Season')
+    axes[1].set_ylabel('Average Total of Bike Rental')
+    axes[1].set_title('(hour.csv)')
 
     st.pyplot(fig)  # Menampilkan plot di Streamlit
 
@@ -74,20 +74,20 @@ if page == "Bike Rental based on Season & Weather":
     st.write("**Average by Weather**")
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
     sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
-    axes[0].set_xlabel('Kondisi Cuaca')
-    axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
-    axes[0].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (day.csv)')
+    axes[0].set_xlabel('Weather')
+    axes[0].set_ylabel('Average Total of Bike Renta')
+    axes[0].set_title('(day.csv)')
 
     sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
     axes[1].set_xlabel('Kondisi Cuaca')
-    axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
-    axes[1].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (hour.csv)')
+    axes[1].set_ylabel('verage Total of Bike Renta')
+    axes[1].set_title('(hour.csv)')
 
     st.pyplot(fig)
 
 # Page 2: Bike Rental based on Days
 elif page == "Bike Rental based on Days":
-    st.subheader("Average of Bike Rental by Days")
+    st.subheader("Average of Bike Rental Based on Days")
 
     # Menghitung rata-rata peminjaman di hari kerja dan libur
     weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
@@ -122,9 +122,9 @@ elif page == "Bike Rentals Over Time":
     ax.grid(True)  # Show grid
 
     # Add title and labels
-    ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)
-    ax.set_xlabel('Tanggal', fontsize=12)
-    ax.set_ylabel('Jumlah Peminjaman', fontsize=12)
+    ax.set_title('Bike Rental Total per Day', fontsize=16, pad=20)
+    ax.set_xlabel('Date', fontsize=12)
+    ax.set_ylabel('Rental Total', fontsize=12)
 
     # Set x-axis major ticks to be every month
     ax.xaxis.set_major_locator(mdates.MonthLocator())  # Major ticks every month
