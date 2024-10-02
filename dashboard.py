@@ -20,7 +20,7 @@ def load_data():
 # Load the data
 day_df, hour_df = load_data()
 
-# Sidebar - Add logo
+st.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
 # Adjust the path to your logo
 # Sidebar with selectbox for navigation
 st.sidebar.header("Select Page")
