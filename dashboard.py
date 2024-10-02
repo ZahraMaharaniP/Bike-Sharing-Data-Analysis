@@ -10,18 +10,6 @@ warnings.filterwarnings('ignore')
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bike Sharing Data Analysis", layout="centered")
 
-# Project Title
-st.title("Proyek Analisis Data: Bike Sharing Dataset")
-st.write("Nama: Zahra Maharani Putri")
-st.write("Email: zhrmhrnputri2001@gmail.com")
-st.write("ID Dicoding: zahra_maharani_putri_T8FO")
-
-# Business Questions
-st.header("Pertanyaan Bisnis")
-st.write("1. What is the average bike sharing data when considering the influence of weather and season?")
-st.write("2. What is the pattern of bike sharing data based on weekdays and holidays?")
-st.write("3. Which date shows the most bike sharing data?")
-
 # Load the dataset (You will need to adjust the path or upload option)
 @st.cache_data
 def load_data():
@@ -31,6 +19,22 @@ def load_data():
 
 # Load the data
 day_df, hour_df = load_data()
+
+# Sidebar for date range filtering
+st.sidebar.header("Filter Data by Date Range")
+min_date = pd.to_datetime(day_df['dteday']).min()
+max_date = pd.to_datetime(day_df['dteday']).max()
+
+start_date, end_date = st.sidebar.date_input(
+    "Select Date Range", [min_date, max_date],
+    min_value=min_date, max_value=max_date
+)
+
+# Filter the dataframe based on date input
+filtered_day_df = day_df[
+    (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
+    (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
+]
 
 # Display data samples
 st.header("Bike Sharing Data (Day)")
@@ -49,19 +53,22 @@ weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
 
 # Display bar plots with custom colors
-fig1, ax1 = plt.subplots()
-sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=ax1)
-ax1.set_xlabel('Jenis Hari')
-ax1.set_ylabel('Rata-rata Jumlah Peminjaman')
-ax1.set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Harian)')
-st.pyplot(fig1)
+# Buat figure dan axes
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+# Grafik pertama: Data harian
+sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
+axes[0].set_xlabel('Jenis Hari')
+axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[0].set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Harian)')
 
-fig2, ax2 = plt.subplots()
-sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=ax2)
-ax2.set_xlabel('Jenis Hari')
-ax2.set_ylabel('Rata-rata Jumlah Peminjaman')
-ax2.set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Jam)')
-st.pyplot(fig2)
+# Grafik kedua: Data per jam
+sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
+axes[1].set_xlabel('Jenis Hari')
+axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[1].set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Jam)')
+
+plt.tight_layout()
+st.pyplot(fig)
 
 # Statistical tests (T-tests)
 st.subheader("Uji Statistik (T-Test)")
