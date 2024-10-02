@@ -20,6 +20,8 @@ def load_data():
 # Load the data
 day_df, hour_df = load_data()
 
+st.header('Bike Rental Dashboard :sparkles:')
+
 # Sidebar with selectbox for navigation
 st.sidebar.header("Bike Rent")
 page = st.sidebar.selectbox(
