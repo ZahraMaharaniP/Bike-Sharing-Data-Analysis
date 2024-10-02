@@ -44,7 +44,36 @@ st.header("Bike Sharing Data (Hour)")
 st.write(hour_df.head())
 
 # Average bike sharing by weather and season
-st.subheader("Rata-rata Peminjaman Berdasarkan Cuaca dan Musim")
+st.subheader("Average of Bike Rental by Weather & Season")
+# Buat figure dan axes
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 8))
+
+# Grafik 1: Rata-rata peminjaman per musim (harian)
+sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=axes[0, 0])
+axes[0, 0].set_xlabel('Musim')
+axes[0, 0].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[0, 0].set_title('Rata-rata Peminjaman per Musim (Harian)')
+
+# Grafik 2: Rata-rata peminjaman per musim (per jam)
+sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, ax=axes[0, 1], palette=['lightpink', 'pink'])
+axes[0, 1].set_xlabel('Musim')
+axes[0, 1].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[0, 1].set_title('Rata-rata Peminjaman per Musim (Per Jam)')
+
+# Grafik 3: Rata-rata peminjaman per kondisi cuaca (harian)
+sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=axes[1, 0], palette=['lightpink', 'pink'])
+axes[1, 0].set_xlabel('Kondisi Cuaca')
+axes[1, 0].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[1, 0].set_title('Rata-rata Peminjaman per Kondisi Cuaca (Harian)')
+
+# Grafik 4: Rata-rata peminjaman per kondisi cuaca (per jam)
+sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, ax=axes[1, 1])
+axes[1, 1].set_xlabel('Kondisi Cuaca')
+axes[1, 1].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[1, 1].set_title('Rata-rata Peminjaman per Kondisi Cuaca (Per Jam)')
+
+plt.tight_layout()
+plt.show()
 
 weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
@@ -56,16 +85,16 @@ holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
 # Buat figure dan axes
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 # Grafik pertama: Data harian
-sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
-axes[0].set_xlabel('Jenis Hari')
-axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[0].set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Harian)')
+sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
+axes[0].set_xlabel('Days')
+axes[0].set_ylabel('Average Total of Bike Rental')
+axes[0].set_title('day.csv')
 
 # Grafik kedua: Data per jam
-sns.barplot(x=['Hari Kerja', 'Hari Libur'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
-axes[1].set_xlabel('Jenis Hari')
-axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[1].set_title('Perbandingan Peminjaman Sepeda pada Hari Kerja dan Libur (Data Jam)')
+sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
+axes[1].set_xlabel('Days')
+axes[1].set_ylabel('Average Total of Bike Rental')
+axes[1].set_title('hour.csv')
 
 plt.tight_layout()
 st.pyplot(fig)
