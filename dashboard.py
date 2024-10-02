@@ -35,46 +35,49 @@ filtered_day_df = day_df[
     (pd.to_datetime(day_df['dteday']) >= pd.to_datetime(start_date)) &
     (pd.to_datetime(day_df['dteday']) <= pd.to_datetime(end_date))
 ]
+# Menghitung rata-rata peminjaman per musim
+season_avg_day = avg_rentals_by_season(filtered_day_df)
+season_avg_hour = avg_rentals_by_season(filtered_hour_df)
+# Menghitung rata-rata peminjaman per kondisi cuaca
+weather_avg_day = avg_rentals_by_weather(filtered_day_df)
+weather_avg_hour = avg_rentals_by_weather(filtered_hour_df)
 
-# Display data samples
-st.header("Bike Sharing Data (Day)")
-st.write(day_df.head())
+st.subheader("Average of Bike Rental by Season")
+# Membuat subplots berdampingan
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+# Grafik untuk day.csv
+sns.barplot(x=season_avg_day.index, y=season_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
+axes[0].set_xlabel('Musim')
+axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[0].set_title('Rata-rata Peminjaman Sepeda per Musim (day.csv)')
 
-st.header("Bike Sharing Data (Hour)")
-st.write(hour_df.head())
+# Grafik untuk hour.csv
+sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
+axes[1].set_xlabel('Musim')
+axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
 
-# Average bike sharing by weather and season
-st.subheader("Average of Bike Rental by Weather & Season")
-# Buat figure dan axes
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 8))
+st.pyplot(fig)  # Menampilkan plot di Streamlit
 
-# Grafik 1: Rata-rata peminjaman per musim (harian)
-sns.barplot(x=season_avg_day.index, y=season_avg_day.values, ax=axes[0, 0])
-axes[0, 0].set_xlabel('Musim')
-axes[0, 0].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[0, 0].set_title('Rata-rata Peminjaman per Musim (Harian)')
+# Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
+st.subheader("Average of Bike Rental by Season")
 
-# Grafik 2: Rata-rata peminjaman per musim (per jam)
-sns.barplot(x=season_avg_hour.index, y=season_avg_hour.values, ax=axes[0, 1], palette=['lightpink', 'pink'])
-axes[0, 1].set_xlabel('Musim')
-axes[0, 1].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[0, 1].set_title('Rata-rata Peminjaman per Musim (Per Jam)')
+# Membuat subplots berdampingan untuk cuaca
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+# Grafik untuk day.csv
+sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
+axes[0].set_xlabel('Kondisi Cuaca')
+axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[0].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (day.csv)')
+# Grafik untuk hour.csv
+sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
+axes[1].set_xlabel('Kondisi Cuaca')
+axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
+axes[1].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (hour.csv)')
 
-# Grafik 3: Rata-rata peminjaman per kondisi cuaca (harian)
-sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, ax=axes[1, 0], palette=['lightpink', 'pink'])
-axes[1, 0].set_xlabel('Kondisi Cuaca')
-axes[1, 0].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[1, 0].set_title('Rata-rata Peminjaman per Kondisi Cuaca (Harian)')
+st.pyplot(fig)  # Menampilkan plot di Streamlit
 
-# Grafik 4: Rata-rata peminjaman per kondisi cuaca (per jam)
-sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, ax=axes[1, 1])
-axes[1, 1].set_xlabel('Kondisi Cuaca')
-axes[1, 1].set_ylabel('Rata-rata Jumlah Peminjaman')
-axes[1, 1].set_title('Rata-rata Peminjaman per Kondisi Cuaca (Per Jam)')
-
-plt.tight_layout()
-plt.show()
-
+# Menghitung rata-rata peminjaman di hari weekday n weekend
 weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
 
@@ -89,7 +92,6 @@ sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_day, holiday_avg_day], pale
 axes[0].set_xlabel('Days')
 axes[0].set_ylabel('Average Total of Bike Rental')
 axes[0].set_title('day.csv')
-
 # Grafik kedua: Data per jam
 sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
 axes[1].set_xlabel('Days')
@@ -99,13 +101,5 @@ axes[1].set_title('hour.csv')
 plt.tight_layout()
 st.pyplot(fig)
 
-# Statistical tests (T-tests)
-st.subheader("Uji Statistik (T-Test)")
-t_stat_day, p_value_day = stats.ttest_ind(day_df[day_df['workingday'] == 1]['cnt'],
-                                          day_df[day_df['holiday'] == 1]['cnt'])
-st.write(f"Uji t (Data Harian): t-statistic = {t_stat_day}, p-value = {p_value_day}")
-
-t_stat_hour, p_value_hour = stats.ttest_ind(hour_df[hour_df['workingday'] == 1]['cnt'],
-                                            hour_df[hour_df['holiday'] == 1]['cnt'])
-st.write(f"Uji t (Data Jam): t-statistic = {t_stat_hour}, p-value = {p_value_hour}")
-
+if __name__ == "__main__":
+    pass
