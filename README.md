@@ -1,8 +1,4 @@
 ### **Bike Rental Dashboard**🚲✨ 
-## Live App
-
-Check out the live version of the app here: https://dashboard-bikesharing-dataanalysis-zahrapoetri.streamlit.app/
-
 ## Status
 Project Status : Completed
 
