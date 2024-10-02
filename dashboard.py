@@ -12,8 +12,47 @@ st.set_page_config(page_title="Bike Sharing Data Analysis", layout="wide")
 
 # Set the main title
 st.title("Bike Sharing Data Analysis")
+# Menambahkan logo perusahaan di sidebar utama
+st.sidebar.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
 
+# Menambahkan pilihan page
+page = st.sidebar.selectbox(
+    "Pilih Page",
+    ["Information: Bike Rental Based Weather and Season", "Information: Bike Rental Based Holidays and Weekdays", "Bike Rental Over Time"]
+)
+
+# Filter berdasarkan page
+if page == "Information: Bike Rental Based Weather and Season":
+    # Tambahkan filter untuk musim dan cuaca di sini
+    season = st.sidebar.selectbox("Pilih Musim", ["Spring", "Summer", "Autumn", "Winter"])
+    weather = st.sidebar.selectbox("Pilih Cuaca", ["Clear", "Cloudy", "Light rain", "Heavy rain"])
+
+    # Filter data berdasarkan musim dan cuaca
+    filtered_data = all_df[(all_df['season'] == season) & (all_df['weather'] == weather)]
+
+elif page == "Information: Bike Rental Based Holidays and Weekdays":
+    # Tambahkan filter untuk hari libur dan hari kerja di sini
+    holiday = st.sidebar.radio("Pilih Hari", ["Holiday", "Weekday"])
+
+    # Filter data berdasarkan hari libur atau hari kerja
+    filtered_data = all_df[all_df['holiday'] == holiday]
+
+else:
+    # Filter berdasarkan rentang waktu
+    min_date = all_df["order_date"].min()
+    max_date = all_df["order_date"].max()
+
+    start_date, end_date = st.date_input(
+        label='Rentang Waktu',
+        min_value=min_date,
+        max_value=max_date,
+        value=[min_date, max_date]
+    )
+
+    filtered_data   
+ = all_df[(all_df['order_date'] >= start_date) & (all_df['order_date'] <= end_date)]
 # Load the dataset (You will need to adjust the path or upload option)
+
 @st.cache_data
 def load_data():
     day_df = pd.read_csv('data/day.csv')  # Assuming day.csv is uploaded
