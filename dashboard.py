@@ -73,14 +73,18 @@ ax.set_ylabel('Average Rentals')
 st.pyplot(fig)
 
 # 3. Bike Rentals Over Time
-st.subheader("Bike Rentals Over Time")
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(10, 5))  # Mengatur ukuran gambar menjadi 10 inci lebar dan 5 inci tinggi
+plt.rcParams['font.size'] = 12  # Mengatur ukuran font secara global menjadi 12
+
+# Buat line plot dengan warna pink dan grid
 sns.lineplot(x='dteday', y='cnt', data=day_df, ax=ax, color='pink')
-ax.set_title('Bike Rentals Over Time')
-ax.set_xlabel('Date')
-ax.set_ylabel('Number of Rentals')
-ax.tick_params(axis='x', rotation=45)
-st.pyplot(fig)
+ax.grid(True)  # Menampilkan grid pada plot
+
+# Tambahkan judul dan label dengan ukuran font yang lebih besar
+ax.set_title('Jumlah Peminjaman Sepeda per Hari', fontsize=16, pad=20)  # Judul dengan ukuran font 16 dan padding 20 poin
+ax.set_xlabel('Tanggal', fontsize=12)  # Label sumbu x dengan ukuran font 12
+ax.set_ylabel('Jumlah Peminjaman', fontsize=12)  # Label sumbu y dengan ukuran font 12
+ax.tick_params(axis='x', rotation=45)  # Memutar label pada sumbu x sebesar 45 derajat agar lebih mudah dibaca
 
 # 4. Bike Rentals by Weekdays and Holidays
 st.subheader("Average Bike Rentals: Weekdays vs Holidays")
