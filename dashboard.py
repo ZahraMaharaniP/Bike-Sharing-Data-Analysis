@@ -1,14 +1,16 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from scipy import stats
+import matplotlib.dates as mdates
 import warnings
 warnings.filterwarnings('ignore')
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bike Sharing Data Analysis", layout="centered")
+
+# Set the main title
+st.title("Bike Sharing Data Analysis")
 
 # Load the dataset (You will need to adjust the path or upload option)
 @st.cache_data
@@ -35,7 +37,6 @@ def avg_rentals_by_weather(df):
     df['weathersit'] = df['weathersit'].map(weather_mapping)
     return df.groupby('weathersit')['cnt'].mean()
 
-
 # Load the data
 day_df, hour_df = load_data()
 
@@ -57,17 +58,19 @@ filtered_day_df = day_df[
 
 # Menghitung rata-rata peminjaman per musim
 season_avg_day = avg_rentals_by_season(filtered_day_df)
-season_avg_hour = avg_rentals_by_season(hour_df)  # Perlu menggunakan hour_df untuk data per jam
+season_avg_hour = avg_rentals_by_season(hour_df)
 
 # Menghitung rata-rata peminjaman per kondisi cuaca
 weather_avg_day = avg_rentals_by_weather(filtered_day_df)
-weather_avg_hour = avg_rentals_by_weather(hour_df)  # Perlu menggunakan hour_df untuk data per jam
+weather_avg_hour = avg_rentals_by_weather(hour_df)
 
-st.subheader("Average of Bike Rental by Season & Weather")
 # Visualisasi Rata-rata Peminjaman Sepeda per Musim
-st.write("**Average of by Season**")
+st.subheader("Average of Bike Rental by Season & Weather")
+st.write("**Average by Season**")
+
 # Membuat subplots berdampingan
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+
 # Grafik untuk day.csv
 sns.barplot(x=season_avg_day.index, y=season_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
 axes[0].set_xlabel('Musim')
@@ -80,40 +83,42 @@ axes[1].set_xlabel('Musim')
 axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
 axes[1].set_title('Rata-rata Peminjaman Sepeda per Musim (hour.csv)')
 
-st.pyplot(fig)  # Menampilkan plot di Streamlit
+st.pyplot(fig)
 
 # Visualisasi Rata-rata Peminjaman Sepeda per Kondisi Cuaca
 st.write("**Average by Weather**")
-# Membuat subplots berdampingan untuk cuaca
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6), constrained_layout=True)
+
 # Grafik untuk day.csv
 sns.barplot(x=weather_avg_day.index, y=weather_avg_day.values, palette=['lightpink', 'pink'], ax=axes[0])
 axes[0].set_xlabel('Kondisi Cuaca')
 axes[0].set_ylabel('Rata-rata Jumlah Peminjaman')
 axes[0].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (day.csv)')
+
 # Grafik untuk hour.csv
 sns.barplot(x=weather_avg_hour.index, y=weather_avg_hour.values, palette=['lightpink', 'pink'], ax=axes[1])
 axes[1].set_xlabel('Kondisi Cuaca')
 axes[1].set_ylabel('Rata-rata Jumlah Peminjaman')
 axes[1].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (hour.csv)')
 
-st.pyplot(fig)  # Menampilkan plot di Streamlit
+st.pyplot(fig)
 
-# Menghitung rata-rata peminjaman di hari weekday n weekend
+# Menghitung rata-rata peminjaman di hari weekday dan weekend
 weekday_avg_day = day_df[day_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_day = day_df[day_df['holiday'] == 1]['cnt'].mean()
-
 weekday_avg_hour = hour_df[hour_df['workingday'] == 1]['cnt'].mean()
 holiday_avg_hour = hour_df[hour_df['holiday'] == 1]['cnt'].mean()
 
+# Rata-rata peminjaman berdasarkan hari
 st.subheader("Average of Bike Rental by Days")
-# Buat figure dan axes
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
+
 # Grafik pertama: Data harian
 sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_day, holiday_avg_day], palette=['lightpink', 'pink'], ax=axes[0])
 axes[0].set_xlabel('Days')
 axes[0].set_ylabel('Average Total of Bike Rental')
 axes[0].set_title('day.csv')
+
 # Grafik kedua: Data per jam
 sns.barplot(x=['Weekday', 'Holiday'], y=[weekday_avg_hour, holiday_avg_hour], palette=['lightpink', 'pink'], ax=axes[1])
 axes[1].set_xlabel('Days')
@@ -144,7 +149,12 @@ def plot_daily_rentals(day_df):
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=10))  # Mengatur interval tanggal yang ditampilkan
 
     st.pyplot(plt)  # Menampilkan plot di Streamlit
-    plt.clf()  # Bersihkan figure setelah ditampilka
+    plt.clf()  # Bersihkan figure setelah ditampilkan
 
+# Panggil fungsi untuk menampilkan grafik peminjaman harian
+plot_daily_rentals(filtered_day_df)
+
+# Fungsi utama untuk menjalankan Streamlit
 if __name__ == "__main__":
     pass
+
