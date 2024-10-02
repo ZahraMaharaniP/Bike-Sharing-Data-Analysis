@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates 
-from scipy import stats
+import matplotlib.dates as mdates
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -25,30 +23,30 @@ def avg_rentals_by_season(df):
     return df.groupby('season')['cnt'].mean()
 
 def avg_rentals_by_weather(df):
-    # Menghitung rata-rata peminjaman per kondisi cuaca
     weather_mapping = {
         1: 'Clear',
         2: 'Cloudy, Mist',
         3: 'Light Rain',
         4: 'Heavy Rain'
     }
-    
     df['weathersit'] = df['weathersit'].map(weather_mapping)
     return df.groupby('weathersit')['cnt'].mean()
-
 
 # Load the data
 day_df, hour_df = load_data()
 
-# Sidebar navigation
-st.sidebar.markdown(f"""
-### Select Analysis Page:
-- [{'Bike Rental based on Season & Weather' if st.session_state.page == 'Bike Rental based on Season & Weather' else 'Bike Rental based on Season & Weather'}](#)
-- [{'Bike Rental based on Days' if st.session_state.page == 'Bike Rental based on Days' else 'Bike Rental based on Days'}](#)
-- [{'Bike Rentals Over Time' if st.session_state.page == 'Bike Rentals Over Time' else 'Bike Rentals Over Time'}](#)
-""")
+# Sidebar navigation using markdown
+st.sidebar.header("Navigate Pages")
 
-# Trigger page navigation using session state
+# Initialize session state for navigation
+if 'page' not in st.session_state:
+    st.session_state.page = "Bike Rental based on Season & Weather"
+
+# Function to change page
+def navigate_page(page_name):
+    st.session_state.page = page_name
+
+# Sidebar with buttons for navigation
 if st.sidebar.button('Bike Rental based on Season & Weather'):
     navigate_page("Bike Rental based on Season & Weather")
 elif st.sidebar.button('Bike Rental based on Days'):
@@ -97,7 +95,7 @@ if st.session_state.page == "Bike Rental based on Season & Weather":
     axes[1].set_title('Rata-rata Peminjaman Sepeda per Kondisi Cuaca (hour.csv)')
     
     st.pyplot(fig)
-    
+
 # Page 2: Bike Rental based on Days
 elif st.session_state.page == "Bike Rental based on Days":
     st.subheader("Average of Bike Rental by Days")
@@ -149,7 +147,5 @@ elif st.session_state.page == "Bike Rentals Over Time":
     # Display the plot
     st.pyplot(fig)
 
-# Fungsi utama untuk menjalankan Streamlit
 if __name__ == "__main__":
     pass
-
